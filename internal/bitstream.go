@@ -1,5 +1,8 @@
+package internal
+
 import "io"
 
 type BitStream struct {
-	src io.Reader
+	src    io.Reader
+	buffer bufio
 }
