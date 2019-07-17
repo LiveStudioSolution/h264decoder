@@ -10,7 +10,7 @@ var annexBSpliter1 = []byte{0, 0, 1}
 var annexBSpliter2 = []byte{0, 0, 0, 1}
 
 const (
-	MaxNaluRbspSize = 512 * 1024
+	maxNaluRbspSize = 512 * 1024
 )
 
 func init() {
@@ -29,7 +29,7 @@ func NewBitStream(src io.Reader) *BitStream {
 		src: src,
 	}
 	bs.scanner = bufio.NewScanner(bs.src)
-	bs.scanner.Buffer(make([]byte, MaxNaluRbspSize), MaxNaluRbspSize)
+	bs.scanner.Buffer(make([]byte, maxNaluRbspSize), maxNaluRbspSize)
 	bs.scanner.Split(ScanNalu)
 	return &bs
 }
@@ -48,6 +48,7 @@ func (bs *BitStream) NextNalu() (*Nalu, error) {
 	return nl, nil
 }
 
+// ScanNalu  split func for bufio  to split nalu in bit stream
 func ScanNalu(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	// Skip leading splite bytes.
 	//if len(data) < 3 {
@@ -59,19 +60,19 @@ func ScanNalu(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	//}
 	//log.Printf("data = %v",data)
 	start := 0
-	if bytes.HasPrefix(data,annexBSpliter1) {
+	if bytes.HasPrefix(data, annexBSpliter1) {
 		start = len(annexBSpliter1)
-	} else if bytes.HasPrefix(data,annexBSpliter2) {
+	} else if bytes.HasPrefix(data, annexBSpliter2) {
 		start = len(annexBSpliter2)
 	}
 
 	// Scan until next spliter, marking end of nalu.
 	for i := start; i+3 < len(data); i++ {
-		if bytes.HasPrefix(data[i:],annexBSpliter1) {
-			return i+len(annexBSpliter1), data[start:i], nil
+		if bytes.HasPrefix(data[i:], annexBSpliter1) {
+			return i + len(annexBSpliter1), data[start:i], nil
 		}
-		if bytes.HasPrefix(data[i:],annexBSpliter2) {
-			return i+len(annexBSpliter2), data[start:i], nil
+		if bytes.HasPrefix(data[i:], annexBSpliter2) {
+			return i + len(annexBSpliter2), data[start:i], nil
 		}
 	}
 	// If we're at EOF, last nalu . Return it.

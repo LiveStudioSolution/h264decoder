@@ -3,9 +3,11 @@ package internal
 import (
 	"bytes"
 	"fmt"
+
 	"github.com/32bitkid/bitreader"
 )
 
+// NaluType of h264 codec
 type NaluType uint8
 
 // ITU-T Rec. H.264 (05/2003) page 48
@@ -67,9 +69,10 @@ func (nt NaluType) String() string {
 	case NaluFiller:
 		return "NaluFiller"
 	}
-	return fmt.Sprintf("NaluUnspecified:%d",nt)
+	return fmt.Sprintf("NaluUnspecified:%d", nt)
 }
 
+// Nalu  of h264 codec
 type Nalu struct {
 	rbsp   []byte
 	refIdc uint8
@@ -77,11 +80,13 @@ type Nalu struct {
 	br     bitreader.BitReader
 }
 
+//NewNalu  create new Nalu
 func NewNalu() *Nalu {
 	nl := Nalu{}
 	return &nl
 }
 
+//Load load bit from data, add parse nalu fields
 func (nl *Nalu) Load(data []byte) error {
 	if data == nil {
 		return fmt.Errorf("invalid nalu data")
@@ -117,10 +122,12 @@ func (nl *Nalu) parse() error {
 	return nil
 }
 
+// Type return nalu type
 func (nl *Nalu) Type() NaluType {
 	return nl.uType
 }
 
+// RbspSize  return nalu rbsp bytes count
 func (nl *Nalu) RbspSize() int {
 	return len(nl.rbsp)
 }
