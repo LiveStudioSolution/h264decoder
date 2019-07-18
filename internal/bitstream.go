@@ -50,15 +50,8 @@ func (bs *BitStream) NextNalu() (*Nalu, error) {
 
 // ScanNalu  split func for bufio  to split nalu in bit stream
 func ScanNalu(data []byte, atEOF bool) (advance int, token []byte, err error) {
-	// Skip leading splite bytes.
-	//if len(data) < 3 {
-	//	if atEOF {
-	//		return len(data), data, nil
-	//	} else {
-	//		return 0, nil, nil
-	//	}
-	//}
 	//log.Printf("data = %v",data)
+	// Skip leading spliter bytes.
 	start := 0
 	if bytes.HasPrefix(data, annexBSpliter1) {
 		start = len(annexBSpliter1)
