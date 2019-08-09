@@ -88,11 +88,11 @@ func NewNalu() *Nalu {
 
 //Load load bit from data, add parse nalu fields
 func (nl *Nalu) Load(data []byte) error {
-	if data == nil {
+	if data == nil || len(data) < 1 {
 		return fmt.Errorf("invalid nalu data")
 	}
-	nl.rbsp = data
-	nl.br = bitreader.NewReader(bytes.NewBuffer(nl.rbsp))
+	nl.rbsp = data[1:]
+	nl.br = bitreader.NewReader(bytes.NewBuffer(data))
 	return nl.parse()
 }
 
