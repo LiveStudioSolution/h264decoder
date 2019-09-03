@@ -54,7 +54,7 @@ func (hd *H264Decoder) NextFrame() (image.Image, error) {
 	case NaluSps:
 		return nil, hd.parseSps(nalu)
 	case NaluPps:
-		return nil, fmt.Errorf("NaluPps")
+		return nil, hd.parsePps(nalu)
 	case NaluAud:
 		return nil, fmt.Errorf("NaluAud")
 	case NaluEoseq:
@@ -69,7 +69,18 @@ func (hd *H264Decoder) NextFrame() (image.Image, error) {
 
 func (hd *H264Decoder) parseSps(nalu *Nalu) error {
 	var err error
-	hd.sps, err = SpsParseFromRBSP(nalu.rbsp)
+	hd.sps, err = ParseSpsFromRBSP(nalu.rbsp)
+	if err != nil {
+		return err
+	}
+	l := logger.Log
+	l.Printf("got sps %v", hd.sps)
+	return nil
+}
+
+func (hd *H264Decoder) parsePps(nalu *Nalu) error {
+	var err error
+	hd.sps, err = ParsePpsFromRBSP(nalu.rbsp)
 	if err != nil {
 		return err
 	}
