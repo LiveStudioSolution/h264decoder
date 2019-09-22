@@ -80,11 +80,11 @@ func (hd *H264Decoder) parseSps(nalu *Nalu) error {
 
 func (hd *H264Decoder) parsePps(nalu *Nalu) error {
 	var err error
-	hd.sps, err = ParsePpsFromRBSP(nalu.rbsp)
+	hd.pps, err = ParsePpsFromRBSP(nalu.rbsp)
 	if err != nil {
 		return err
 	}
 	l := logger.Log
-	l.Printf("got sps %v", hd.sps)
+	l.Printf("got pps %v", hd.pps)
 	return nil
 }

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/32bitkid/bitreader"
-	"github.com/LiveStudioSolution/h264decoder/internal/cavlc"
+	"github.com/LiveStudioSolution/h264decoder/internal/rbr"
 )
 
 var errNotImplemented = fmt.Errorf("not implemented")
@@ -175,7 +175,7 @@ func (sps *SPS) Load(rbsp []byte) error {
 		return err
 	}
 
-	sps.Id, err = cavlc.DecUe(br)
+	sps.Id, err = rbr.DecUe(br)
 	if err != nil {
 		return err
 	}
@@ -191,18 +191,18 @@ func (sps *SPS) Load(rbsp []byte) error {
 		}
 	}
 
-	sps.Log2MaxFrameNumMinus4, err = cavlc.DecUe(br)
+	sps.Log2MaxFrameNumMinus4, err = rbr.DecUe(br)
 	if err != nil {
 		return err
 	}
 
-	sps.PicOrderCntType, err = cavlc.DecUe(br)
+	sps.PicOrderCntType, err = rbr.DecUe(br)
 	if err != nil {
 		return err
 	}
 
 	if sps.PicOrderCntType == 0 {
-		sps.Log2MaxPicOrderCntLsbMinus4L, err = cavlc.DecUe(br)
+		sps.Log2MaxPicOrderCntLsbMinus4L, err = rbr.DecUe(br)
 		if err != nil {
 			return err
 		}
@@ -211,15 +211,15 @@ func (sps *SPS) Load(rbsp []byte) error {
 		if err != nil {
 			return err
 		}
-		sps.OffsetForNonRefPic, err = cavlc.DecSe(br)
+		sps.OffsetForNonRefPic, err = rbr.DecSe(br)
 		if err != nil {
 			return err
 		}
-		sps.OffsetForTopToBottomField, err = cavlc.DecSe(br)
+		sps.OffsetForTopToBottomField, err = rbr.DecSe(br)
 		if err != nil {
 			return err
 		}
-		sps.NumRefFramesInPicOrderCntCycle, err = cavlc.DecUe(br)
+		sps.NumRefFramesInPicOrderCntCycle, err = rbr.DecUe(br)
 		if err != nil {
 			return err
 		}
@@ -227,12 +227,12 @@ func (sps *SPS) Load(rbsp []byte) error {
 			sps.OffsetForRefFrame = make([]int, sps.NumRefFramesInPicOrderCntCycle)
 		}
 		for i := uint(0); i < sps.NumRefFramesInPicOrderCntCycle; i++ {
-			sps.OffsetForRefFrame[i], err = cavlc.DecSe(br)
+			sps.OffsetForRefFrame[i], err = rbr.DecSe(br)
 		}
 
 	}
 
-	sps.NumRefFrames, err = cavlc.DecUe(br)
+	sps.NumRefFrames, err = rbr.DecUe(br)
 	if err != nil {
 		return err
 	}
@@ -242,11 +242,11 @@ func (sps *SPS) Load(rbsp []byte) error {
 		return err
 	}
 
-	sps.PicWidthInMbsMinus1, err = cavlc.DecUe(br)
+	sps.PicWidthInMbsMinus1, err = rbr.DecUe(br)
 	if err != nil {
 		return err
 	}
-	sps.PicHeightInMapUnitsMinus1, err = cavlc.DecUe(br)
+	sps.PicHeightInMapUnitsMinus1, err = rbr.DecUe(br)
 	if err != nil {
 		return err
 	}
@@ -273,19 +273,19 @@ func (sps *SPS) Load(rbsp []byte) error {
 	}
 
 	if sps.FrameCroppingFlag {
-		sps.FrameCrop.LeftOffset, err = cavlc.DecUe(br)
+		sps.FrameCrop.LeftOffset, err = rbr.DecUe(br)
 		if err != nil {
 			return err
 		}
-		sps.FrameCrop.RightOffset, err = cavlc.DecUe(br)
+		sps.FrameCrop.RightOffset, err = rbr.DecUe(br)
 		if err != nil {
 			return err
 		}
-		sps.FrameCrop.TopOffset, err = cavlc.DecUe(br)
+		sps.FrameCrop.TopOffset, err = rbr.DecUe(br)
 		if err != nil {
 			return err
 		}
-		sps.FrameCrop.BottomOffset, err = cavlc.DecUe(br)
+		sps.FrameCrop.BottomOffset, err = rbr.DecUe(br)
 		if err != nil {
 			return err
 		}
@@ -374,10 +374,10 @@ func (sps *SPS) parsingVuiParams() error {
 		return err
 	}
 	if vui.ChromaLocInfoPresentFlag {
-		if vui.ChromaSampleLocTypeTopField, err = cavlc.DecUe(br); err != nil {
+		if vui.ChromaSampleLocTypeTopField, err = rbr.DecUe(br); err != nil {
 			return err
 		}
-		if vui.ChromaSampleLocTypeBottomField, err = cavlc.DecUe(br); err != nil {
+		if vui.ChromaSampleLocTypeBottomField, err = rbr.DecUe(br); err != nil {
 			return err
 		}
 	}
@@ -428,22 +428,22 @@ func (sps *SPS) parsingVuiParams() error {
 		if vui.MotionVectorsOverPicBoundariesFlag, err = br.Read1(); err != nil {
 			return err
 		}
-		if vui.MaxBytesPerPicDenom, err = cavlc.DecUe(br); err != nil {
+		if vui.MaxBytesPerPicDenom, err = rbr.DecUe(br); err != nil {
 			return err
 		}
-		if vui.MaxBitsPerMbDenom, err = cavlc.DecUe(br); err != nil {
+		if vui.MaxBitsPerMbDenom, err = rbr.DecUe(br); err != nil {
 			return err
 		}
-		if vui.Log2MaxMvLengthHorizontal, err = cavlc.DecUe(br); err != nil {
+		if vui.Log2MaxMvLengthHorizontal, err = rbr.DecUe(br); err != nil {
 			return err
 		}
-		if vui.Log2MaxMvLengthVertical, err = cavlc.DecUe(br); err != nil {
+		if vui.Log2MaxMvLengthVertical, err = rbr.DecUe(br); err != nil {
 			return err
 		}
-		if vui.MaxNumReorderFrames, err = cavlc.DecUe(br); err != nil {
+		if vui.MaxNumReorderFrames, err = rbr.DecUe(br); err != nil {
 			return err
 		}
-		if vui.MaxDecFrameBuffering, err = cavlc.DecUe(br); err != nil {
+		if vui.MaxDecFrameBuffering, err = rbr.DecUe(br); err != nil {
 			return err
 		}
 	}
@@ -460,7 +460,7 @@ func (sps *SPS) parseHdrParameters() error {
 	hrd := &sps.VuiParams.HrdParameters
 	br := sps.br
 	var err error
-	if hrd.CpbCntMinus1, err = cavlc.DecUe(br); err != nil {
+	if hrd.CpbCntMinus1, err = rbr.DecUe(br); err != nil {
 		return err
 	}
 	if hrd.BitRateScale, err = br.Read8(4); err != nil {
@@ -473,10 +473,10 @@ func (sps *SPS) parseHdrParameters() error {
 	hrd.CpbSizeValueMinus1 = make([]uint, hrd.CpbCntMinus1+1)
 	hrd.CbrFlag = make([]bool, hrd.CpbCntMinus1+1)
 	for sidx := uint(0); sidx <= hrd.CpbCntMinus1; sidx++ {
-		if hrd.BitRateValueMinus1[sidx], err = cavlc.DecUe(br); err != nil {
+		if hrd.BitRateValueMinus1[sidx], err = rbr.DecUe(br); err != nil {
 			return err
 		}
-		if hrd.CpbSizeValueMinus1[sidx], err = cavlc.DecUe(br); err != nil {
+		if hrd.CpbSizeValueMinus1[sidx], err = rbr.DecUe(br); err != nil {
 			return err
 		}
 		if hrd.CbrFlag[sidx], err = br.Read1(); err != nil {

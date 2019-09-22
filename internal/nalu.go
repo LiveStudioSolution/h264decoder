@@ -98,7 +98,7 @@ func (nl *Nalu) Load(data []byte) error {
 
 func (nl *Nalu) parse() error {
 	if len(nl.rbsp) < 1 {
-		return fmt.Errorf("nalu invalid rbsp size 0")
+		return fmt.Errorf("nalu invalid rbr size 0")
 	}
 	// parse type
 	// forbidden_zero_bit
@@ -127,7 +127,7 @@ func (nl *Nalu) Type() NaluType {
 	return nl.uType
 }
 
-// RbspSize  return nalu rbsp bytes count
+// RbspSize  return nalu rbr bytes count
 func (nl *Nalu) RbspSize() int {
 	return len(nl.rbsp)
 }

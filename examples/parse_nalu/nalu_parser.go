@@ -27,7 +27,7 @@ func main() {
 		if err != nil || nl == nil {
 			break
 		}
-		log.Printf("get nalu type = %v, rbsp size = %v\n", nl.Type(), nl.RbspSize())
+		log.Printf("get nalu type = %v, rbr size = %v\n", nl.Type(), nl.RbspSize())
 	}
 	if err != nil {
 		log.Printf("get nalu err = %v\n", err)

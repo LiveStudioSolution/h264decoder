@@ -1,4 +1,4 @@
-package cavlc
+package rbr
 
 import (
 	"github.com/32bitkid/bitreader"
